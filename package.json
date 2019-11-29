@@ -1,0 +1,27 @@
+{
+  "name": "lab-8-back-end",
+  "version": "0.0.2",
+  "description": "lab-8-SQl",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/munaalshorman/lab-8-back-end.git"
+  },
+  "author": "muna",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/munaalshorman/lab-8-back-end/issues"
+  },
+  "homepage": "https://github.com/munaalshorman/lab-8-back-end#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "pg": "^7.14.0",
+    "superagent": "^5.1.1"
+  }
+}
