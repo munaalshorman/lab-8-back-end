@@ -22,16 +22,17 @@ server.get('/events', eventHanddler);
 /////////////location//////////////////
 
 function locationHandler(request, response) {
-  getLocation(request.query.data)
-  console.log('request.query.data : ', request.query.data)
-    .then(data => response.status(200).json(data))
-    .catch((error) => errorHandler(error, request, response));
+  console.log('request.query.data : ', request.query.data);
+  getLocation(request.query.data) //city from user
+      .then(locationData => response.status(200).json(locationData))
+      .catch((error) => errorHandler(error, request, response));
 }
-
 ///////// data from API for location /////
 function getLocation(city) {
-  let SQL = 'SELECT * FROM location WHERE search_query = $1 ';
+  let SQL = 'select * FROM location WHERE search_query = $1 ';
   let values = [city];
+  console.log('sql',SQL);
+  console.log('values',values)
   return client.query(SQL, values)
     .then(results => {
       if (results.rowCount) {
@@ -39,7 +40,7 @@ function getLocation(city) {
       }
       else {
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${city}&key=${process.env.GEOCODE_API_KEY}`;
-
+        console.log(url);
         return superagent.get(url)
           .then(data => cacheLocation(city, data.body));
       }
@@ -48,6 +49,7 @@ function getLocation(city) {
 let cache = {};
 function cacheLocation(city, data) {
   const location = new Location(data.results[0]);
+  console.log(location);
   let SQL = 'INSERT INTO location (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING *';
   let values = [city, location.formatted_query, location.latitude, location.longitude];
   return client.query(SQL, values)
@@ -58,9 +60,11 @@ function cacheLocation(city, data) {
     });
 }
 
+
 ////////location constructor function////////
 function Location(city, data) {
-  this.formatted_query = data.results[0].formatted_addresponses;
+  this.search_query = city;
+  this.formatted_query = data.results[0].formatted_address;
   this.latitude = data.results[0].geometry.location.lat;
   this.longitude = data.results[0].geometry.location.lng;
 }
